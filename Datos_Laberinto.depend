@@ -1,4 +1,4 @@
 # depslib dependency file v1.0
-1384029960 source:c:\laberinto\datos_laberinto\main.cpp
-	<winbgim.h>
+1384032114 source:c:\laberinto\datos_laberinto\main.cpp
+	<iostream>
 
