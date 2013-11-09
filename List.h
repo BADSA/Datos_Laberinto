@@ -1,5 +1,14 @@
 #ifndef LIST_H_INCLUDED
 #define LIST_H_INCLUDED
+
+
+void Assert(bool val, std::string s) {
+    if (!val) { // Assertion failed -- close the program
+        std::cout << "Assertion Failed: " << s << std::endl;
+        exit(-1);
+    }
+}
+
 template <typename E> class List { // List ADT
 private:
   void operator =(const List&) {}      // Protect assignment
@@ -71,7 +80,7 @@ private:
   }
 
 public:
-  LList(int size=defaultSize) { init(); }    // Constructor
+  LList(int size=10) { init(); }    // Constructor
   ~LList() { removeall(); }                   // Destructor
   void print() const;                // Print list contents
   void clear() { removeall(); init(); }       // Clear list

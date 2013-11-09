@@ -1,9 +1,10 @@
 #include <iostream>
-
-using namespace std;
+#include <graphics.h>
+#include "Grafo.h"
 
 int main()
 {
-    cout << "Hello world!" << endl;
+    Graphl gPrincipal(5);
+    std::cout << "Hello world!" << std::endl;
     return 0;
 }

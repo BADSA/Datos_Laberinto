@@ -1,7 +1,9 @@
-#ifndef GRAFO_H_INCLUDED
-#define GRAFO_H_INCLUDED
+#ifndef GRAFO_INCLUDED
+#define GRAFO_INCLUDED
 #include "Link.h"
-#include "Llist.h"
+#include "List.h"
+#include <stdio.h>
+#include <ctype.h>
 #define UNVISITED 0
 #define VISITED 1
 // From the software distribution accompanying the textbook
@@ -11,6 +13,15 @@
 
 // Graph abstract class. This ADT assumes that the number
 // of vertices is fixed when the graph is created.
+class Edge {
+  int vert, wt;
+public:
+  Edge() { vert = -1; wt = -1; }
+  Edge(int v, int w) { vert = v; wt = w; }
+  int vertex() { return vert; }
+  int weight() { return wt; }
+};
+
 class Graph {
 private:
   void operator =(const Graph&) {}     // Protect assignment
@@ -58,18 +69,10 @@ public:
   virtual int getMark(int v) =0;
   virtual void setMark(int v, int val) =0;
 };
-class Edge {
-  int vert, wt;
-public:
-  Edge() { vert = -1; wt = -1; }
-  Edge(int v, int w) { vert = v; wt = w; }
-  int vertex() { return vert; }
-  int weight() { return wt; }
-};
 
 // Overload for the Edge << operator
-ostream& operator << (ostream& s, Edge e)
-{ return s << "(" << e.vertex() << ", " << e.weight() << ")"; }
+// ostream& operator << (ostream& s, Edge e)
+//{ return s << "(" << e.vertex() << ", " << e.weight() << ")"; }
 
 class Graphl : public Graph {
 private:
@@ -172,4 +175,4 @@ public:
   void setMark(int v, int val) { mark[v] = val; }
 };
 
-#endif // GRAFO_H_INCLUDED
+#endif // GRAFO_INCLUDED
