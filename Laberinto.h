@@ -89,7 +89,7 @@ public:
         this->setVisitado(numNodo);
         AList<int> vecinos = G.getListaVecinos(numNodo);
         vecinos.shuffle();
-        Sleep(1);
+
         for (vecinos.moveToStart(); vecinos.currPos()<vecinos.length() ; vecinos.next()){
             if ( (this->isVisitado(vecinos.getValue()))== 0 ) {
                 this->setAristaIndividual(numNodo,vecinos.getValue());

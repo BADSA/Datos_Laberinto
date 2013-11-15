@@ -152,15 +152,10 @@ int dibujaGrafo(Laberinto G){
         circle(x,y,5);
         setcolor(15);
 
-        if ( ((i + 1) % 30) == 0 ){
-            if (vecinos.length()==0){
-                cambiarFila = true;
-            }
-        }
 
         for (vecinos.moveToStart();vecinos.currPos()<vecinos.length();vecinos.next()){
             int decision = vecinos.getValue() - i;
-            //cout<<i<<" vecino "<<vecinos.getValue()<<endl;
+            cout<<i<<" vecino "<<vecinos.getValue()<<endl;
             if (decision==-1){
                     movIzq();
                     movDer();
@@ -178,16 +173,12 @@ int dibujaGrafo(Laberinto G){
                     movArr();
                     movAba();
             }
-
-            if (vecinos.currPos() + 1 == vecinos.length() ){
-                if ( ((i + 1) % 30) == 0 ){
-                    cambiarFila = true;
-                }else{
-                    x+=25;
-                    moveto(x,y);
-                }
-            }
-
+        }
+        if ( ((i + 1) % 30) == 0 ){
+            cambiarFila = true;
+        }else{
+            x+=25;
+            moveto(x,y);
         }
     }
     getch();
@@ -199,5 +190,9 @@ int main()
     srand(time(NULL));
     Laberinto lleno(600);
     lleno.crearTodasAristas();
+    Laberinto resultante(600);
+    resultante.profundidad(lleno , 255);
+    dibujaGrafo(resultante);
+
     return 0;
 }

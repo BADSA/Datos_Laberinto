@@ -50,12 +50,9 @@ public:
   }
 
     void shuffle(){
-        srand(time(NULL));
         for (int i=0;i<50;i++){
             int temp=rand() % listSize;
-           // cout<<temp<<" ";
             int temp2=rand() % listSize;
-           // cout<<temp2<<" ";
             E it = listArray[temp2];
             listArray[temp2] = listArray[temp];
             listArray[temp]=it;
