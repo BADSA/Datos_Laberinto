@@ -1,4 +1,25 @@
 # depslib dependency file v1.0
-1384032114 source:c:\laberinto\datos_laberinto\main.cpp
+1384549416 source:c:\users\melalonso\workspacecodeblocks\datos_laberinto\main.cpp
 	<iostream>
+	<winbgim.h>
+	"Grafo.h"
+	"List.h"
+	<stdlib.h>
+	<time.h>
+
+1384549650 c:\users\melalonso\workspacecodeblocks\datos_laberinto\grafo.h
+	"List.h"
+	"AList.h"
+	<stdlib.h>
+	<time.h>
+
+1384386499 c:\users\melalonso\workspacecodeblocks\datos_laberinto\list.h
+	"Link.h"
+
+1384194658 c:\users\melalonso\workspacecodeblocks\datos_laberinto\link.h
+
+1384547902 c:\users\melalonso\workspacecodeblocks\datos_laberinto\alist.h
+	"List.h"
+	<stdlib.h>
+	<time.h>
 
