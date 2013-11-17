@@ -13,8 +13,6 @@ public:
     int *visitado;
     int aristas=0;
     int cantNodos=0;
-    int visitas = 1;
-
 
     void init(int cant){
         this->nodo = new AList<int> [cant];
@@ -89,16 +87,34 @@ public:
         this->setVisitado(numNodo);
         AList<int> vecinos = G.getListaVecinos(numNodo);
         vecinos.shuffle();
-
         for (vecinos.moveToStart(); vecinos.currPos()<vecinos.length() ; vecinos.next()){
             if ( (this->isVisitado(vecinos.getValue()))== 0 ) {
                 this->setAristaIndividual(numNodo,vecinos.getValue());
-                visitas ++;
                 profundidad(G,vecinos.getValue());
             }
         }
     }
 
+   void llenarArregloVecinos() {
+       int indicePrincipal = 0;
+       int vecino;
+       AList <int> arregloVecinos;
+       for(int nodoActual = 0; nodoActual < this->cantNodos; nodoActual++){
+            AList<int> vecinosNodo = this->getListaVecinos(nodoActual);
+            for(int i=0; i < vecinosNodo.length(); i++) {
+                vecinosNodo.moveToPos(i);
+                vecino = vecinosNodo.getValue();
+                arregloVecinos.append(vecino);
+                indicePrincipal++;
+            }
+            if (vecinosNodo.length() != 4) {
+                for (int i = vecinosNodo.length(); i < 4; i++) {
+                    arregloVecinos.append(-1);
+                    indicePrincipal++;
+                }
+            }
+       }
+    }
 
 };
 
