@@ -11,7 +11,7 @@ void Assert(bool val, std::string s) {
 
 template <typename E> class List { // List ADT
 private:
-  void operator =(const List&) {}      // Protect assignment
+//  void operator =(const List&) {}      // Protect assignment
   //List(const List&) {}           // Protect copy constructor
 public:
   List() {}          // Default constructor
