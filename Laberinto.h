@@ -159,7 +159,16 @@ void recorrido(int *ruta,int nodo){
     }
     recorrido(ruta,599);
 }
+    void limpiarGrafo(){
+        aristas=0;
+        cantNodos=0;
+        visitas=1;
+        for (int i =0;i<this->cantNodos;i++){
+            nodo[i].clear();
+            visitado[i]=0;
 
+        }
+    }
 };
 
 
