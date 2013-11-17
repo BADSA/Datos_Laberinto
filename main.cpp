@@ -28,16 +28,19 @@ void movAba(){ y+=tamLinea; lineto(x,y); abajo=true;  izquierda=arriba=derecha=f
 void movArr(){ y-=tamLinea; lineto(x,y); arriba=true;  izquierda=derecha=abajo=false;}
 
 void dibujaGrafo(Laberinto G){
-    initwindow(1000,700);
+    //initwindow(1000,700);
     int grosorLinea = 13;
     setlinestyle(1,1,grosorLinea);
+    xF=25;
+    yF=25;
     x = xF;
     y = yF;
     bool cambiarFila = false;
     moveto(x,y);
-    setcolor(15);
+    //setcolor(15);
     int ciclo = G.getCantidadNodos();
     for (int i=0;i<ciclo;i++){
+        Sleep(1);
         AList<int> vecinos= G.getListaVecinos(i);
         if (cambiarFila){
             x=xF;
@@ -68,8 +71,8 @@ void dibujaGrafo(Laberinto G){
             moveto(x,y);
         }
     }
-    getch();
-    closegraph( );
+    //getch();
+    //closegraph( );
 }
 
 Laberinto leerLaberinto() {
@@ -86,9 +89,6 @@ Laberinto leerLaberinto() {
     labEntrada.read( reinterpret_cast< char * >( &lab ), sizeof( Laberinto ) );
     return lab;
 }
-
-
-
 
 void escribirLaberinto(Laberinto L) {
     fstream labSalida( "labSaved.dat", ios::in | ios::out | ios::binary );
@@ -142,8 +142,14 @@ void genera(string algoritmo){
     Laberinto lleno(600);
     lleno.crearTodasAristas();
     Laberinto resultante(600);
+    Laberinto solucion(600);
+
     if (algoritmo == "profundidad") {
-            resultante.profundidad(lleno , 255);
+            //resultante.limpiarGrafo();
+            resultante.profundidad(lleno , 0);
+            initwindow(1000,700);
+            setcolor(15);
+            dibujaGrafo(resultante);
     }else if (algoritmo == "prim"){
         cout << "No implementado aun..."<<endl;
         // resultante.prim(lleno , 255);
@@ -151,7 +157,14 @@ void genera(string algoritmo){
         cout << "No implementado aun..."<<endl;
         // resultante.kruskal(lleno , 255);
     }
-    dibujaGrafo(resultante);
+    if (algoritmo=="solucionar"){
+        solucion.dijkstra(resultante,0);
+        setcolor(3);
+        dibujaGrafo(solucion);
+        solucion.limpiarGrafo();
+        resultante.limpiarGrafo();
+    }
+
     void (*funct)(Laberinto) = menuGenerar;
     funct(resultante);
 }
@@ -170,6 +183,7 @@ void menuTipoAlgoritmo(){
     cin>>op;
     switch (op){
         case '1':
+        srand(time(NULL));
            genera("profundidad");
             break;
         case '2':
@@ -192,6 +206,10 @@ void menuTipoAlgoritmo(){
 
 void menuGenerar(Laberinto L ){
     system("cls");
+    Laberinto solucion(600);
+    if (L.getCantAristas()!=0){
+            solucion.dijkstra(L,0);
+    }
     char op;
     void (*mPrim)();
     mPrim=menuPrincipal;
@@ -207,7 +225,12 @@ void menuGenerar(Laberinto L ){
             menuTipoAlgoritmo();
             break;
         case '2':
-            mPrim();
+            //genera("solucionar");
+            setcolor(3);
+            dibujaGrafo(solucion);
+            getch();
+            closegraph();
+            menuPrincipal();
             break;
         case '3':
             escribirLaberinto(L);
@@ -290,7 +313,6 @@ void menuPrincipal(){
 int main()
 {
     srand(time(NULL));
-    //inicializarArchivo();
     menuPrincipal();
     return 0;
 }
