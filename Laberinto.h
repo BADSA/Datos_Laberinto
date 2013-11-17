@@ -69,7 +69,11 @@ public:
     }
 
     AList<int> getListaVecinos(int numNodo){
-        return this->nodo[numNodo];
+        AList<int> temporal(4);
+        for (nodo[numNodo].moveToStart();nodo[numNodo].currPos()<nodo[numNodo].length();nodo[numNodo].next()){
+            temporal.append(nodo[numNodo].getValue());
+        }
+        return temporal;
     }
 
     void crearTodasAristas(){
@@ -99,8 +103,66 @@ public:
         }
     }
 
+void recorrido(int *ruta,int nodo){
+    if (ruta[nodo]==0){
+            cout<<ruta[nodo]<<" ";
+            this->setArista(nodo,ruta[nodo]);
+            //dibujaGrafo(gSolucion);
+            return;
+    }
+    this->setArista(nodo,ruta[nodo]);
+    cout<<ruta[nodo]<<" ";
+    recorrido(ruta,ruta[nodo]);
+}
+    void dijkstra(Laberinto G,int nodoInicial){
+    int peso[G.cantNodos];
+    int ruta[G.cantNodos];
+    bool def[G.cantNodos];
+    int destino;
+
+    //peso=new int[G.cantNodos];
+   // def=new bool[G.cantNodos];
+    //ruta=new int[G.cantNodos];
+    destino=599;
+    for (int i=0;i<G.cantNodos;i++){
+        peso[i]=10000;
+        def[i]=false;
+        ruta[i]=0;
+    }
+    int actual=nodoInicial;
+    def[actual]=true;
+    peso[actual]=0;
+    int menor;
+    int contador=0;
+    while(def[destino]==false){
+            contador+=1;
+        //cout<<actual<<" ";//<<endl;
+        AList<int> vecinos=G.getListaVecinos(actual);
+        //recorre la lista de vecinos del nodo actual
+        for (vecinos.moveToStart();vecinos.currPos()<vecinos.length();vecinos.next()){
+                cout<<vecinos.getValue()<<" ";
+            if ((peso[actual]+1<peso[vecinos.getValue()])&&(def[vecinos.getValue()]==false)){
+                //cout<<vecinos.getValue()<<" ";
+                peso[vecinos.getValue()]=peso[actual]+1;
+                ruta[vecinos.getValue()]=actual;
+            }
+        }
+        menor=10000;
+        for (int i=0;i<G.cantNodos;i++){
+            if ((peso[i]<menor)&& (def[i]==false)){
+                menor=peso[i];
+                actual=i;
+            }
+        }
+        def[actual]=true;
+        //cout<<actual<<endl;
+    }
+    recorrido(ruta,599);
+}
 
 };
+
+
 
 
 #endif // GRAFO_H_INCLUDED
