@@ -15,13 +15,13 @@ public:
     int cantNodos=0;
     int visitas = 1;
 
-
     void init(int cant){
         this->nodo = new AList<int> [cant];
         this->visitado = new int[cant];
         this->cantNodos = cant;
         for(int i=0;i<cant;i++){
             visitado[i]=0;
+            nodo[i].clear();
         }
     }
 
@@ -93,9 +93,8 @@ public:
         this->setVisitado(numNodo);
         AList<int> vecinos = G.getListaVecinos(numNodo);
         vecinos.shuffle();
-
         for (vecinos.moveToStart(); vecinos.currPos()<vecinos.length() ; vecinos.next()){
-            if ( (this->isVisitado(vecinos.getValue()))== 0 ) {
+            if ( (this->isVisitado(vecinos.getValue())) == 0 ) {
                 this->setAristaIndividual(numNodo,vecinos.getValue());
                 visitas ++;
                 profundidad(G,vecinos.getValue());
@@ -105,16 +104,16 @@ public:
 
 void recorrido(int *ruta,int nodo){
     if (ruta[nodo]==0){
-            cout<<ruta[nodo]<<" ";
+            //cout<<ruta[nodo]<<" ";
             this->setArista(nodo,ruta[nodo]);
             //dibujaGrafo(gSolucion);
             return;
     }
     this->setArista(nodo,ruta[nodo]);
-    cout<<ruta[nodo]<<" ";
+    //cout<<ruta[nodo]<<" ";
     recorrido(ruta,ruta[nodo]);
 }
-    void dijkstra(Laberinto G,int nodoInicial){
+void dijkstra(Laberinto G,int nodoInicial){
     int peso[G.cantNodos];
     int ruta[G.cantNodos];
     bool def[G.cantNodos];
@@ -140,7 +139,7 @@ void recorrido(int *ruta,int nodo){
         AList<int> vecinos=G.getListaVecinos(actual);
         //recorre la lista de vecinos del nodo actual
         for (vecinos.moveToStart();vecinos.currPos()<vecinos.length();vecinos.next()){
-                cout<<vecinos.getValue()<<" ";
+                //cout<<vecinos.getValue()<<" ";
             if ((peso[actual]+1<peso[vecinos.getValue()])&&(def[vecinos.getValue()]==false)){
                 //cout<<vecinos.getValue()<<" ";
                 peso[vecinos.getValue()]=peso[actual]+1;
@@ -166,7 +165,6 @@ void recorrido(int *ruta,int nodo){
         for (int i =0;i<this->cantNodos;i++){
             nodo[i].clear();
             visitado[i]=0;
-
         }
     }
 };

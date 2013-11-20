@@ -5,6 +5,7 @@
 #include<stdlib.h>
 #include<time.h>
 #include <fstream>
+#include "guardar.h"
 
 using namespace std;
 
@@ -19,13 +20,14 @@ bool derecha=false;
 bool izquierda=false;
 
 void menuPrincipal();
-void menuCargar();
+void menuCargar(Laberinto L=NULL);
 void menuGenerar(Laberinto L = NULL);
 
 void movDer(){ x+=tamLinea; lineto(x,y); derecha=true;  izquierda=arriba=abajo=false;}
 void movIzq(){ x-=tamLinea; lineto(x,y); izquierda=true; derecha=arriba=abajo=false;}
 void movAba(){ y+=tamLinea; lineto(x,y); abajo=true;  izquierda=arriba=derecha=false;}
 void movArr(){ y-=tamLinea; lineto(x,y); arriba=true;  izquierda=derecha=abajo=false;}
+
 
 void dibujaGrafo(Laberinto G){
     //initwindow(1000,700);
@@ -37,7 +39,6 @@ void dibujaGrafo(Laberinto G){
     y = yF;
     bool cambiarFila = false;
     moveto(x,y);
-    //setcolor(15);
     int ciclo = G.getCantidadNodos();
     for (int i=0;i<ciclo;i++){
         Sleep(1);
@@ -75,134 +76,33 @@ void dibujaGrafo(Laberinto G){
     //closegraph( );
 }
 
-Laberinto leerLaberinto() {
-    fstream labEntrada( "labSaved.dat", ios::in | ios::binary );
-    if ( !labEntrada.is_open() ) {
-        cerr << "No se pudo abrir el archivo." << endl;
-        exit( 1 );
-    }
-    int numLab;
-    cout<< "Digite el numero de laberinto que desea cargar -> ";
-    cin >> numLab;
-    labEntrada.seekp(0); //(numLab)* sizeof(Laberinto)
-    Laberinto lab(600);
-    labEntrada.read( reinterpret_cast< char * >( &lab ), sizeof( Laberinto ) );
-    return lab;
-}
 
-void escribirLaberinto(Laberinto L) {
-    fstream labSalida( "labSaved.dat", ios::in | ios::out | ios::binary );
-    if ( !labSalida.is_open() ) {
-        cerr << "No se pudo abrir el archivo." << endl;
-        exit(1);
-    }
-    cout << "Guardando laberinto..."<<endl;
-
-
-
-    /*
-    Laberinto lab(600);
-    int cantLabGuardados = 0;
-    labSalida.seekp(0);
-    labSalida.read( reinterpret_cast< char * >( &lab ), sizeof( Laberinto ) );
-    cout << lab.getCantAristas()<<endl;
-    while ( labSalida.good() ) {
-        if ( lab.getCantAristas() > 0 ) {
-            cout << "laberinto en pos "<<cantLabGuardados<<endl;
-            cantLabGuardados+=1;
-        }
-        labSalida.read( reinterpret_cast< char * >( &lab ), sizeof( Laberinto ) );
-    }
-    labSalida.seekp(cantLabGuardados);
-    */
-    labSalida.write(reinterpret_cast<const char *>(&L), sizeof(Laberinto));
-//    cout << "Laberinto guardado correctamente en pos "<<cantLabGuardados<<endl;
-
-    /*
-    //cout << "Hay guardados "<<cantLabGuardados << " laberintos."<< endl;
-    //labSalida.seekp((cantLabGuardados)* sizeof(Laberinto));
-    */
-}
-
-
-void inicializarArchivo() {
-    ofstream labSalida;
-    labSalida.open("labSaved.dat", ios::out | ios::binary);
-    if (!labSalida.is_open()) {
-        cerr << "No se pudo abrir el archivo." << endl;
-        exit( 1 );
-    }
-    Laberinto laberintoEnBlanco(600);
-    for (int i = 0; i < 100; i++) {
-       labSalida.write( reinterpret_cast<const char *>( &laberintoEnBlanco ), sizeof( Laberinto ) );
-    }
-}
-
-void genera(string algoritmo){
+void solucionarLab(string clave,Laberinto G1=NULL){
     Laberinto lleno(600);
     lleno.crearTodasAristas();
     Laberinto resultante(600);
     Laberinto solucion(600);
-
-    if (algoritmo == "profundidad") {
-            //resultante.limpiarGrafo();
-            resultante.profundidad(lleno , 0);
-            initwindow(1000,700);
-            setcolor(15);
-            dibujaGrafo(resultante);
-    }else if (algoritmo == "prim"){
-        cout << "No implementado aun..."<<endl;
-        // resultante.prim(lleno , 255);
-    }else{
-        cout << "No implementado aun..."<<endl;
-        // resultante.kruskal(lleno , 255);
-    }
-    if (algoritmo=="solucionar"){
-        solucion.dijkstra(resultante,0);
-        setcolor(3);
-        dibujaGrafo(solucion);
-        solucion.limpiarGrafo();
-        resultante.limpiarGrafo();
-    }
-
+    solucion.dijkstra(resultante,0);
+    setcolor(3);
+    dibujaGrafo(solucion);
+    solucion.limpiarGrafo();
+    resultante.limpiarGrafo();
     void (*funct)(Laberinto) = menuGenerar;
     funct(resultante);
 }
-
-
-void menuTipoAlgoritmo(){
-    system("cls");
-    void (*funct)(Laberinto);
-    funct = menuGenerar;
-    cout<<"    Menu Algoritmo de generacion"<<endl;
-    cout<<"1- Profundidad"<<endl;
-    cout<<"2- Prim"<<endl;
-    cout<<"3- Kruskal"<<endl;
-    cout<<"4- Regresar"<<endl;
-    char op;
-    cin>>op;
-    switch (op){
-        case '1':
-        srand(time(NULL));
-           genera("profundidad");
-            break;
-        case '2':
-            genera("prim");
-            break;
-        case '3':
-            genera("kruskal");
-            break;
-        case '4':
-            funct(NULL);
-            break;
-        default:
-            cout<<endl;
-            cout<<"La opcion digitada es incorrecta"<<endl;
-            cout<<endl;
-            menuTipoAlgoritmo();
-    }
+Laberinto generarLab(){
+    Laberinto lleno(600);
+    lleno.crearTodasAristas();
+    Laberinto resultante(600);
+    resultante.profundidad(lleno,0);
+    initwindow(940,650);
+    setcolor(15);
+    outtextxy (15,625,"Por favor regrese a la consola para contunuar con el programa. ");
+    dibujaGrafo(resultante);
+    setcolor(3);
+    void (*funct)(Laberinto) = menuGenerar;
+    funct(resultante);
 }
-
 
 void menuGenerar(Laberinto L ){
     system("cls");
@@ -211,79 +111,124 @@ void menuGenerar(Laberinto L ){
             solucion.dijkstra(L,0);
     }
     char op;
+    void (*mCargar)();
+    mCargar=menuCargar;
     void (*mPrim)();
     mPrim=menuPrincipal;
     cout<<"Generador de Laberintos BADSA.Corp"<<endl;
     cout<<"    Menu Generar"<<endl;
-    cout<<"1-Indicar algoritmo de generacion"<<endl;
+    cout<<"1-Generar laberinto"<<endl;
     cout<<"2-Solucionar el laberinto"<<endl;
     cout<<"3-Guardar el laberinto"<<endl;
     cout<<"4-Regresar"<<endl;
     cin>>op;
     switch (op){
         case '1':
-            menuTipoAlgoritmo();
+            generarLab();
             break;
         case '2':
-            //genera("solucionar");
-            setcolor(3);
-            dibujaGrafo(solucion);
-            getch();
-            closegraph();
-            menuPrincipal();
+            if (L.getCantAristas()!=0){
+                setcolor(3);
+                dibujaGrafo(solucion);
+                outtextxy (15,625,"Selecione esta ventatana y presione cualquier tecla para continuar...");
+                getch();
+                closegraph();
+                menuPrincipal();
+            }else{
+                cout<<"No se ha generado ningun Laberinto para solucionar."<<endl;
+                system("pause");
+                menuGenerar(NULL);
+            }
             break;
         case '3':
-            escribirLaberinto(L);
+            if (L.getCantAristas()!=0){
+                closegraph();
+                solucion.dijkstra(L,0);
+                escribirArchivo(L);
+            }else{
+                cout<<"No se ha generado ningun laberinto, por favor elija la opcion generar para guardar laberinto"<<endl;
+                system("pause");
+                menuGenerar(NULL);
+            }
+            menuPrincipal();
             break;
         case '4':
+            closegraph();
             mPrim();
             break;
         default:
             cout<<endl;
             cout<<"La opcion digitada es incorrecta"<<endl;
             cout<<endl;
-            menuCargar();
+            mCargar();
             break;
     }
 }
 
-void menuCargar(){
+void menuCargar(Laberinto labRecuperado=NULL){
     system("cls");
     void (*mPrim)();
+    Laberinto solucion(600);
+    if (labRecuperado.getCantAristas()!=0){
+            solucion.dijkstra(labRecuperado,0);
+    }
     mPrim=menuPrincipal;
     char op;
-    Laberinto labRecuperado(600);
     cout<<"Generador de Laberintos BADSA.Corp"<<endl;
     cout<<"    Menu Cargar"<<endl;
     cout<<"1-Indicar laberinto a cargar"<<endl;
     cout<<"2-Solucionar laberinto"<<endl;
     cout<<"3-Regresar"<<endl;
     cout<<"Digite la opcion deseada"<<endl;
-    cin>>op;
-    switch (op){
-        case '1':
+    cin>>setw(1)>>op;
+    if (op=='1'){
             system("cls");
-            labRecuperado = leerLaberinto();
-            dibujaGrafo(labRecuperado);
-            menuCargar();
-        case '2':
-            break;
-        case '3':
+            listaArchivo();
+            cout<<"Digite el numero de laberinto a cargar: ";
+            int num;
+            cin>>setw(2)>>num;
+            Arreglo a1=leerArchivo(num);
+            if (a1.getNumeroArreglo()==num){
+                Laberinto labRecuperado = integraArreglo(a1);
+                initwindow(1000,700);
+                setcolor(15);
+                dibujaGrafo(labRecuperado);
+                menuCargar(labRecuperado);
+            }else{
+                cout<<"No se ha encontrado ningun Laberinto con este identificador."<<endl;
+                system("pause");
+                menuPrincipal();
+            }
+    }
+    if (op=='2'){
+            if (solucion.getCantAristas()!=0){
+                setcolor(3);
+                dibujaGrafo(solucion);
+                outtextxy (15,625,"Selecione esta ventatana y presione cualquier tecla para continuar...");
+                getch();
+                closegraph();
+                menuPrincipal();
+            }else{
+                cout<<"No se ha cargado ningun laberinto, por favor indique un laberinto a cargar"<<endl;
+                system("pause");
+                menuGenerar(NULL);
+            }
+    }
+    if (op=='3'){
             mPrim();
-            break;
-        default:
+    }
+
+    else{
             cout<<endl;
             cout<<"La opcion digitada es incorrecta"<<endl;
             cout<<endl;
-            menuCargar();
-            break;
+            menuCargar(NULL);
     }
 }
 
 void menuPrincipal(){
     system("cls");
     char op;
-
     cout<<"Generador de Laberintos BADSA.Corp"<<endl;
     cout<<"    Menu Principal"<<endl;
     cout<<"1-Generar laberinto"<<endl;
@@ -296,7 +241,7 @@ void menuPrincipal(){
             menuGenerar();
             break;
         case '2':
-            menuCargar();
+            menuCargar(NULL);
             break;
         case '3':
             exit(0);
@@ -313,6 +258,11 @@ void menuPrincipal(){
 int main()
 {
     srand(time(NULL));
+    //inicializarArchivo();
     menuPrincipal();
+
+
+
+
     return 0;
 }
