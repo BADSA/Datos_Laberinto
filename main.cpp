@@ -47,7 +47,6 @@ void dibujaGrafo(Laberinto G){
     bool cambiarFila = false;//cambiar fila si es %30
     moveto(x,y);
     int ciclo = G.getCantidadNodos();//ciclo depende de la cantidad de nodos del Grafo
-    cout<<ciclo;
     for (int i=0;i<ciclo;i++){
         Sleep(1);
         AList<int> vecinos= G.getListaVecinos(i);
@@ -124,27 +123,27 @@ void menuCargar(Laberinto labRecuperado){
     }
     if (op=='2'){
             if (solucion.getCantAristas()!=0){
-                setcolor(3);
-                dibujaGrafo(solucion);
-                outtextxy (15,625,"Selecione esta ventatana y presione cualquier tecla para continuar...");
-                getch();
-                closegraph();
-                menuPrincipal();
-            }else{
+                setcolor(3); //cambiar de color la linea para solucionarlo
+                dibujaGrafo(solucion);//dibujar el grafo solucion la solucion
+                outtextxy (15,625,"Selecione esta ventatana y presione cualquier tecla para continuar...");//msj para el usuario
+                getch();//deja en espera la ventana donde se dibuja
+                closegraph();//cierra la ventana donde se dibuja el grafo
+                menuPrincipal();//retorna al menu principal
+            }else{//msj si no se encuentra ningun laberinto
                 cout<<"No se ha cargado ningun laberinto, por favor indique un laberinto a cargar"<<endl;
                 system("pause");
                 menuCargar(NULL);
             }
     }
     if (op=='3'){
-        if (labRecuperado.getCantAristas()!=0){
+        if (labRecuperado.getCantAristas()!=0){//si la ventana de generar esta abierta dibuja la solucion y cierra la ventana
             setcolor(3);
             dibujaGrafo(solucion);
             closegraph();
         }
-        mPrim();
+        mPrim();//retorna al menu principal
     }
-    else{
+    else{//msj por si lo digitado no es correcto
             cout<<endl;
             cout<<"La opcion digitada es incorrecta"<<endl;
             cout<<endl;
@@ -152,14 +151,20 @@ void menuCargar(Laberinto labRecuperado){
     }
 }
 
+//Menu para generar un laberinto X
+//Recibe el laberinto generado por el menu para poderlo solucionar, si no existe ninguno la
+//funcionn empieza con el laberinto en NULL
+
 void menuGenerar(Laberinto L ){
     srand(time(NULL));
     system("cls");
+    //creacion de los grafos necesarios para generar el Laberinto y su solucion.
     Laberinto lleno(600);
     lleno.crearTodasAristas();
     Laberinto resultante(600);
     resultante.profundidad(lleno,0);
     Laberinto solucion(600);
+    //si se pasa un grafo resultante entonces se genera la solcion del mismo nada mas para imprimir
     if (L.getCantAristas()!=0){
             solucion.dijkstra(L,0);
     }
@@ -176,31 +181,33 @@ void menuGenerar(Laberinto L ){
     cout<<"Digite una opcion: ";
     cin>>op;
     if (op=='1'){
-            if (L.getCantAristas()==0){
+            if (L.getCantAristas()==0){//si no se ha generado ningun laberinto lo crea
                 initwindow(940,650);
                 outtextxy (15,625,"Por favor regrese a la consola para contunuar con el programa. ");
                 setcolor(15);
-                dibujaGrafo(resultante);
+                dibujaGrafo(resultante);//dibuja el grafo
                 menuGenerar(resultante);
             }else{
                 cout<<"La opcion generar ya fue selecionada, ahora se cerrara la ventana del Laberinto"<<endl;
                 system("pause");
-                setcolor(3);
-                setcolor(3);
+                setcolor(3);//se necesita dibujar la solcion aunque no se pida y no se ve ante el usuario
+                //hasta este punto se toma esta decision como medida drastica ante el error que no se
+                //podia generar mas de un laberinto, esto dibuja la solucion del laberinto
+                //y deja continuar con el programa normalmente
                 dibujaGrafo(solucion);
                 closegraph();
                 menuPrincipal();
             }
     }
-    if (op=='2'){
-            if (L.getCantAristas()!=0){
+    if (op=='2'){//solcion del Laberinto pasado por parametro
+            if (L.getCantAristas()!=0){//ver si ya exite alguna solucion
                 setcolor(3);
                 dibujaGrafo(solucion);
                 outtextxy (15,625,"Selecione esta ventatana y presione cualquier tecla para continuar...");
                 getch();
                 closegraph();
                 menuPrincipal();
-            }else{
+            }else{//msj para el usuarioo
                 cout<<"No se ha generado ningun Laberinto para solucionar."<<endl;
                 system("pause");
                 menuGenerar(NULL);
@@ -208,14 +215,18 @@ void menuGenerar(Laberinto L ){
     }
     if (op=='3'){
             if (L.getCantAristas()!=0){
+                //se necesita dibujar la solcion aunque no se pida y no se ve ante el usuario
+                //hasta este punto se toma esta decision como medida drastica ante el error que no se
+                //podia generar mas de un laberinto, esto dibuja la solucion del laberinto
+                //y deja continuar con el programa normalmente
                 setcolor(3);
                 dibujaGrafo(solucion);
                 closegraph();
-                closegraph();
-                solucion.dijkstra(L,0);
-                listaArchivo();
-                escribirArchivo(L);
-            }else{
+                solucion.dijkstra(L,0);//probablemente inecesario
+                listaArchivo();//se muestra la lista de grafos guardados en el documento
+                escribirArchivo(L);//se pasa por parametro el grafo que es modificado en la funcion de escribir el
+                //archivo para volverlo un objeto de clase arreglo y poderlo guardar
+            }else{//msj para el usuario
                 cout<<"No se ha generado ningun laberinto, por favor elija la opcion generar para guardar laberinto"<<endl;
                 system("pause");
                 menuGenerar(NULL);
@@ -224,20 +235,26 @@ void menuGenerar(Laberinto L ){
     }
     if (op=='4'){
         if (L.getCantAristas()!=0){
+                //se necesita dibujar la solcion aunque no se pida y no se ve ante el usuario
+                //hasta este punto se toma esta decision como medida drastica ante el error que no se
+                //podia generar mas de un laberinto, esto dibuja la solucion del laberinto
+                //y deja continuar con el programa normalmente
             setcolor(3);
             dibujaGrafo(solucion);
             closegraph();
         }
         mPrim();
     }
-    else{
+    else{//msj para el ususario si lo que se digita es invalido
         cout<<endl;
         cout<<"La opcion digitada es incorrecta"<<endl;
         cout<<endl;
         menuCargar(NULL);
     }
 }
-
+//Menu principal del programa
+//este seleciona que parte del programa se debe ejecutar segun la decision del ususario
+//se mueve entre las funciones de los otros menu
 
 void menuPrincipal(){
     system("cls");
@@ -249,7 +266,7 @@ void menuPrincipal(){
     cout<<"3-Salir"<<endl;
     cout<<"Digite la opcion deseada"<<endl;
     cin>>op;
-    switch (op){
+    switch (op){//decisiones segun el usuario
         case '1':
             menuGenerar();
             break;

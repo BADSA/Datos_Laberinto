@@ -132,7 +132,12 @@ public:
         }
     }
 
+    //funcion recursiva para recibir un puntero a un arreglo y un numero
+    //este recorre el valor indexado del arreglo y el numero
+    //yendo a la posicion que tenga el valor del arreglo en con ese numero de indice
+    //se detiene cuando llega al valor 0 poruq el arreglo se recorre "para atras"
 
+    //esta funcion gera otro grafo que se utiliza para dibujar la solucion.
     void recorrido(int *ruta,int nodo){
         if (ruta[nodo]==0){
                 this->setArista(nodo,ruta[nodo]);
@@ -141,6 +146,15 @@ public:
         this->setArista(nodo,ruta[nodo]);
         recorrido(ruta,ruta[nodo]);
     }
+
+//Fucion para crear la ruta mas corta segun el peso de las aristas
+//se inciailizan todos los pesos en 10000
+//se pone el primero como visitado y se inicia con peso 0
+//se recorren los vecinos se ponen como peso actual +1
+//se pone la ruta del destino como el actual para la funcion de recorrer
+//y se busca el menor peso que no este marcado como visitado
+//se marca como visitado y se repite la recursion desde ese nodo
+
 void dijkstra(Laberinto G,int nodoInicial){
     int peso[G.cantNodos];
     int ruta[G.cantNodos];
@@ -169,7 +183,8 @@ void dijkstra(Laberinto G,int nodoInicial){
                 ruta[vecinos.getValue()]=actual;
             }
         }
-        menor=10000;
+        menor=10000;// para sacar el menor no selecionado
+        //y realizar una especie de metodo burbuja
         for (int i=0;i<G.cantNodos;i++){
             if ((peso[i]<menor)&& (def[i]==false)){
                 menor=peso[i];
@@ -178,6 +193,7 @@ void dijkstra(Laberinto G,int nodoInicial){
         }
         def[actual]=true;
     }
+    //empieza el recorrido con el arreglo de la ruta mas corta
     recorrido(ruta,599);
 }
     // Resetea los atributos del grafo.
