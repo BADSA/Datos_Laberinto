@@ -103,69 +103,7 @@ Laberinto generarLab(){
     void (*funct)(Laberinto) = menuGenerar;
     funct(resultante);
 }
-
-void menuGenerar(Laberinto L ){
-    system("cls");
-    Laberinto solucion(600);
-    if (L.getCantAristas()!=0){
-            solucion.dijkstra(L,0);
-    }
-    char op;
-    void (*mCargar)();
-    mCargar=menuCargar;
-    void (*mPrim)();
-    mPrim=menuPrincipal;
-    cout<<"Generador de Laberintos BADSA.Corp"<<endl;
-    cout<<"    Menu Generar"<<endl;
-    cout<<"1-Generar laberinto"<<endl;
-    cout<<"2-Solucionar el laberinto"<<endl;
-    cout<<"3-Guardar el laberinto"<<endl;
-    cout<<"4-Regresar"<<endl;
-    cin>>op;
-    switch (op){
-        case '1':
-            generarLab();
-            break;
-        case '2':
-            if (L.getCantAristas()!=0){
-                setcolor(3);
-                dibujaGrafo(solucion);
-                outtextxy (15,625,"Selecione esta ventatana y presione cualquier tecla para continuar...");
-                getch();
-                closegraph();
-                menuPrincipal();
-            }else{
-                cout<<"No se ha generado ningun Laberinto para solucionar."<<endl;
-                system("pause");
-                menuGenerar(NULL);
-            }
-            break;
-        case '3':
-            if (L.getCantAristas()!=0){
-                closegraph();
-                solucion.dijkstra(L,0);
-                escribirArchivo(L);
-            }else{
-                cout<<"No se ha generado ningun laberinto, por favor elija la opcion generar para guardar laberinto"<<endl;
-                system("pause");
-                menuGenerar(NULL);
-            }
-            menuPrincipal();
-            break;
-        case '4':
-            closegraph();
-            mPrim();
-            break;
-        default:
-            cout<<endl;
-            cout<<"La opcion digitada es incorrecta"<<endl;
-            cout<<endl;
-            mCargar();
-            break;
-    }
-}
-
-void menuCargar(Laberinto labRecuperado=NULL){
+void menuCargar(Laberinto labRecuperado){
     system("cls");
     void (*mPrim)();
     Laberinto solucion(600);
@@ -225,6 +163,66 @@ void menuCargar(Laberinto labRecuperado=NULL){
             menuCargar(NULL);
     }
 }
+
+void menuGenerar(Laberinto L ){
+    system("cls");
+    Laberinto solucion(600);
+    if (L.getCantAristas()!=0){
+            solucion.dijkstra(L,0);
+    }
+    char op;
+    void (*mPrim)();
+    mPrim=menuPrincipal;
+    cout<<"Generador de Laberintos BADSA.Corp"<<endl;
+    cout<<"    Menu Generar"<<endl;
+    cout<<"1-Generar laberinto"<<endl;
+    cout<<"2-Solucionar el laberinto"<<endl;
+    cout<<"3-Guardar el laberinto"<<endl;
+    cout<<"4-Regresar"<<endl;
+    cin>>op;
+    switch (op){
+        case '1':
+            generarLab();
+            break;
+        case '2':
+            if (L.getCantAristas()!=0){
+                setcolor(3);
+                dibujaGrafo(solucion);
+                outtextxy (15,625,"Selecione esta ventatana y presione cualquier tecla para continuar...");
+                getch();
+                closegraph();
+                menuPrincipal();
+            }else{
+                cout<<"No se ha generado ningun Laberinto para solucionar."<<endl;
+                system("pause");
+                menuGenerar(NULL);
+            }
+            break;
+        case '3':
+            if (L.getCantAristas()!=0){
+                closegraph();
+                solucion.dijkstra(L,0);
+                escribirArchivo(L);
+            }else{
+                cout<<"No se ha generado ningun laberinto, por favor elija la opcion generar para guardar laberinto"<<endl;
+                system("pause");
+                menuGenerar(NULL);
+            }
+            menuPrincipal();
+            break;
+        case '4':
+            closegraph();
+            mPrim();
+            break;
+        default:
+            cout<<endl;
+            cout<<"La opcion digitada es incorrecta"<<endl;
+            cout<<endl;
+            menuCargar(NULL);
+            break;
+    }
+}
+
 
 void menuPrincipal(){
     system("cls");
