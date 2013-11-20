@@ -13,13 +13,12 @@ using namespace std;
 class Arreglo{
 public:
     int vertices[2400];
-    int numeroArreglo;
+    int numeroArreglo=0;
     char nombreArreglo[10];
-    Arreglo(){}
     void setNumeroArreglo(int num){
         numeroArreglo=num;
     }
-    int getNumeroArreglo(){
+    int getNumeroArreglo()const {
         return numeroArreglo;
     }
     void setNombreLab(string nombre){
@@ -33,6 +32,9 @@ public:
         for (int i=0;i<2400;i++){
             cout<<vertices[i]<<" ";
         }
+    }
+    Arreglo(int num=0){
+        numeroArreglo=num;
     }
     //arreglo2 = new int[2400];
 };
@@ -105,16 +107,17 @@ void inicializarArchivo() {
     }
 }
 void escribirArchivo(Laberinto g1){
-    Arreglo arreglo=llenarArregloVecinos(g1);
+    Arreglo arreglo;
+    arreglo=llenarArregloVecinos(g1);
     int *arreglo2;
     arreglo2=new int[2400];
     char nombreLab[10];
-    fstream test("saved.dat", ios::out | ios::binary);
-    if (!test.is_open()) {
+    fstream LabData("saved.dat",ios::in | ios::out | ios::binary);
+    if (!LabData.is_open()) {
         cerr << "No se pudo abrir el archivo." << endl;
         exit( 1 );
     }
-    cout<<"Digite un numero para guardar el arreglo: ";
+    cout<<"Digite un numero para guardar el Laberinto: ";
     int numArreglo;
     cin >> numArreglo;
     cout<<endl;
@@ -123,19 +126,16 @@ void escribirArchivo(Laberinto g1){
             cout<<"Digite un nombre asociado a su laberinto: ";
             cin>>setw(9)>>nombreLab;
             arreglo.setNombreLab(nombreLab);
-            test.seekp((arreglo.getNumeroArreglo() - 1) * sizeof(Arreglo));
-            test.write(reinterpret_cast<const char *>(&arreglo), sizeof(Arreglo));
-            cout<<"Digite un numero para guardar el arreglo: ";
-            cin >> numArreglo;
+            LabData.seekp((arreglo.getNumeroArreglo() - 1) * sizeof(Arreglo));
+            LabData.write(reinterpret_cast<const char *>(&arreglo), sizeof(Arreglo));
+            numArreglo=0;
+
     }
-    test.close();
 }
 Arreglo leerArchivo(int num){
     Arreglo arreglo2;
-    ifstream test2("saved.dat",ios::in | ios::binary);
-
+    ifstream test2("saved.dat", ios::in | ios::binary);
     cout<<"Digite el numero de Laberinto\n->";
-    //cin>>setw(2)>>num;
     test2.read(reinterpret_cast<char *>(&arreglo2), sizeof(Arreglo));
     while ( test2.good() ) {
         if ( arreglo2.getNumeroArreglo() == num ) {
@@ -151,7 +151,7 @@ void listaArchivo(){
     cout<<"             Lista de laberintos almacenados"<<endl;
     cout<<"Utilice el numero asociado al nombre del laberinto para cargarlo cuando desee.\n"<<endl;
     Arreglo arreglo2;
-    ifstream test2("saved.dat",ios::in | ios::binary);
+    ifstream test2("saved.dat", ios::in | ios::binary);
     test2.read(reinterpret_cast<char *>(&arreglo2), sizeof(Arreglo));
     while ( test2.good() ) {
         if ( arreglo2.getNumeroArreglo() != 0 ) {

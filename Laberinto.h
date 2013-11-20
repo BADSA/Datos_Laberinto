@@ -26,6 +26,9 @@ public:
     }
 
 public:
+    ~Laberinto(){
+        this->limpiarGrafo();
+    }
     Laberinto(int cant){
         init(cant);
     }
@@ -102,17 +105,17 @@ public:
         }
     }
 
-void recorrido(int *ruta,int nodo){
-    if (ruta[nodo]==0){
-            //cout<<ruta[nodo]<<" ";
-            this->setArista(nodo,ruta[nodo]);
-            //dibujaGrafo(gSolucion);
-            return;
+    void recorrido(int *ruta,int nodo){
+        if (ruta[nodo]==0){
+                //cout<<ruta[nodo]<<" ";
+                this->setArista(nodo,ruta[nodo]);
+                //dibujaGrafo(gSolucion);
+                return;
+        }
+        this->setArista(nodo,ruta[nodo]);
+        //cout<<ruta[nodo]<<" ";
+        recorrido(ruta,ruta[nodo]);
     }
-    this->setArista(nodo,ruta[nodo]);
-    //cout<<ruta[nodo]<<" ";
-    recorrido(ruta,ruta[nodo]);
-}
 void dijkstra(Laberinto G,int nodoInicial){
     int peso[G.cantNodos];
     int ruta[G.cantNodos];
