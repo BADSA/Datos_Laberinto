@@ -9,16 +9,18 @@ using namespace std;
 
 class Laberinto{
 public:
-    AList<int> * nodo;
-    int *visitado;
+    AList<int> * nodo;  // Puntero a arreglo de listas de arreglos
+    int *visitado; // Puntero a arreglo
     int aristas=0;
     int cantNodos=0;
     int visitas = 1;
 
+    // Metodo que inicializa los atributos de la clase
     void init(int cant){
         this->nodo = new AList<int> [cant];
         this->visitado = new int[cant];
         this->cantNodos = cant;
+        // Establece que ningun nodo ha sido visitado.
         for(int i=0;i<cant;i++){
             visitado[i]=0;
             nodo[i].clear();
@@ -29,41 +31,57 @@ public:
     ~Laberinto(){
         this->limpiarGrafo();
     }
+    // Entradas: cantidad de nodos del grafo.
     Laberinto(int cant){
         init(cant);
     }
 
+    // Obtener la cantidad de nodos.
     int getCantidadNodos(){
         return cantNodos;
     }
 
+    // Regresa 0 si un nodo no ha sido visitado
+    // 1 si ya fue visitado
+    // Entradas: numero de nodo a consultar.
     int isVisitado(int numNodo){
         return this->visitado[numNodo];
     }
 
+    // Establece un nodo como visitado.
+    // Entradas: numero de nodo por visitar.
     void setVisitado(int numNodo){
         this->visitado[numNodo] = 1;
     }
 
+    // Devuelve la cantidad de vecinos de un nodo
+    // Entrada: numero de nodo que se desea obtener lista de vecinos.
     int getCantVecinos(int numNodo){
         return this->nodo[numNodo].length();
     }
 
+    // Establece una arista entre dos nodos a y b
+    // Entradas: nodo a y nodo b
     void setArista(int a, int b){
         this->nodo[a].append(b);
         this->nodo[b].append(a);
         this->aristas += 1;
     }
 
+    // Establece una arista de un punto a otro.
+    // Entradas: nodo a y nodo b
     void setAristaIndividual(int a, int b){
         this->nodo[a].append(b);
         this->aristas += 1;
     }
 
+    // Devuelve la cantidad de aristas del grafo
     int getCantAristas(){
         return this->aristas;
     }
 
+    // Devuelve el valor de un vecino aleatorio de un nodo.
+    // Entradas: numero de nodo del que se desea obtener un vecino aleatorio.
     int getVecinoAleatorio(int numNodo){
         int cant = this->getCantVecinos(numNodo);
         int aleatorio = rand() % cant;
@@ -71,6 +89,8 @@ public:
         return this->nodo[numNodo].getValue();
     }
 
+    // Devuelve la lista de vecinos de un nodo en el grafo.
+    // Entradas: numero de nodo del que se desea obtener lista de vecinos.
     AList<int> getListaVecinos(int numNodo){
         AList<int> temporal(4);
         for (nodo[numNodo].moveToStart();nodo[numNodo].currPos()<nodo[numNodo].length();nodo[numNodo].next()){
@@ -79,12 +99,17 @@ public:
         return temporal;
     }
 
+    // Metodo para crear un grafo lleno con todas las aristas.
     void crearTodasAristas(){
+        // Filas
+        // Se definen los vecinos izquiedo y derecho de un nodo.
         for (int i=0; i <20;i++){
             for (int j=0; j<29; j++){
                 this->setArista( j+(i*30), j+(i*30)+1 );
             }
         }
+        // Columnas
+        // Se definen los vecinos de arriba y abajo de un nodo.
         for (int i=0; i < 30;i++){
             for (int j=i; j<570; j+=30){
                 this->setArista( j, j+30 );
@@ -92,10 +117,12 @@ public:
         }
     }
 
+    // Metodo para generar el algoritmo de profundidad en el grafo.
+    // Entradas: Laberinto lleno, y el numero de nodo donde se desea iniciar el algoritmo.
     void profundidad(Laberinto G,int numNodo){
         this->setVisitado(numNodo);
         AList<int> vecinos = G.getListaVecinos(numNodo);
-        vecinos.shuffle();
+        vecinos.shuffle(); // Se revuelven los vecinos y se recorren en orden ascendente.
         for (vecinos.moveToStart(); vecinos.currPos()<vecinos.length() ; vecinos.next()){
             if ( (this->isVisitado(vecinos.getValue())) == 0 ) {
                 this->setAristaIndividual(numNodo,vecinos.getValue());
@@ -105,15 +132,13 @@ public:
         }
     }
 
+
     void recorrido(int *ruta,int nodo){
         if (ruta[nodo]==0){
-                //cout<<ruta[nodo]<<" ";
                 this->setArista(nodo,ruta[nodo]);
-                //dibujaGrafo(gSolucion);
                 return;
         }
         this->setArista(nodo,ruta[nodo]);
-        //cout<<ruta[nodo]<<" ";
         recorrido(ruta,ruta[nodo]);
     }
 void dijkstra(Laberinto G,int nodoInicial){
@@ -122,9 +147,7 @@ void dijkstra(Laberinto G,int nodoInicial){
     bool def[G.cantNodos];
     int destino;
 
-    //peso=new int[G.cantNodos];
-   // def=new bool[G.cantNodos];
-    //ruta=new int[G.cantNodos];
+
     destino=599;
     for (int i=0;i<G.cantNodos;i++){
         peso[i]=10000;
@@ -138,13 +161,10 @@ void dijkstra(Laberinto G,int nodoInicial){
     int contador=0;
     while(def[destino]==false){
             contador+=1;
-        //cout<<actual<<" ";//<<endl;
         AList<int> vecinos=G.getListaVecinos(actual);
         //recorre la lista de vecinos del nodo actual
         for (vecinos.moveToStart();vecinos.currPos()<vecinos.length();vecinos.next()){
-                //cout<<vecinos.getValue()<<" ";
             if ((peso[actual]+1<peso[vecinos.getValue()])&&(def[vecinos.getValue()]==false)){
-                //cout<<vecinos.getValue()<<" ";
                 peso[vecinos.getValue()]=peso[actual]+1;
                 ruta[vecinos.getValue()]=actual;
             }
@@ -157,10 +177,10 @@ void dijkstra(Laberinto G,int nodoInicial){
             }
         }
         def[actual]=true;
-        //cout<<actual<<endl;
     }
     recorrido(ruta,599);
 }
+    // Resetea los atributos del grafo.
     void limpiarGrafo(){
         aristas=0;
         cantNodos=0;
